@@ -1,0 +1,143 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5786bfcd99f58347",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "piedra",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "piedra",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "f171a0d516cac4b9"
+            ]
+        ]
+    },
+    {
+        "id": "f9c1047189099e87",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "papel",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "papel",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "f171a0d516cac4b9"
+            ]
+        ]
+    },
+    {
+        "id": "e4e92b5a38df32e2",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "tijeras",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "tijeras",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 420,
+        "wires": [
+            [
+                "f171a0d516cac4b9"
+            ]
+        ]
+    },
+    {
+        "id": "f171a0d516cac4b9",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "function 1",
+        "func": "var opciones = [\"piedra\", \"papel\", \"tijeras\"];\nvar seleccionUsuario = msg.topic;\n\n\nvar seleccionOrdenador = opciones[Math.floor(Math.random() * 3)];\n\n\nvar resultado = \"\";\n\nif (seleccionUsuario === seleccionOrdenador) {\n    resultado = \"Empate\";\n} else if (\n    (seleccionUsuario === \"piedra\" && seleccionOrdenador === \"tijeras\") ||\n    (seleccionUsuario === \"papel\" && seleccionOrdenador === \"piedra\") ||\n    (seleccionUsuario === \"tijeras\" && seleccionOrdenador === \"papel\")\n) {\n    resultado = \"Ganaste\";\n} else {\n    resultado = \"el ordenador gana\";\n}\n\n\nmsg.payload = \"El Usuario eligió \" + seleccionUsuario + \", Ordenador eligió \" + seleccionOrdenador + \". Resultado: \" + resultado;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 340,
+        "wires": [
+            [
+                "b0acbe4a8bfa9840"
+            ]
+        ]
+    },
+    {
+        "id": "b0acbe4a8bfa9840",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "imprimir",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 320,
+        "wires": []
+    }
+]
