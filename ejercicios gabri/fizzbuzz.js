@@ -17,4 +17,4 @@ function fizzBuzz(rango, reglaFizz, reglaBuzz) {
       console.log(resultado);
     }
   }
-  
+  fizzBuzz(30, 3, 5);
