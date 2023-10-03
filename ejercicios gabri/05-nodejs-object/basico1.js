@@ -1,13 +1,12 @@
-function restaDesdeObjeto(obj) {
-    if (typeof obj === 'object' && 'bien' in obj && 'mal' in obj) {
-      const resultado = obj.bien - obj.mal;
-      return resultado;
-    } else {
-      return "Entrada inválida: el objeto debe tener propiedades 'bien' y 'mal'.";
-    }
+function getVoteCount(votes) {
+  if (votes && typeof votes === 'object' && 'upvotes' in votes && 'downvotes' in votes) {
+    return votes.upvotes - votes.downvotes;
+  } else {
+    return "Invalid input: the object should have 'upvotes' and 'downvotes' properties.";
   }
-  
-  // Ejemplo de uso:
-  const objetoEjemplo = { bien: 10, mal: 5 };
-  const resultadoResta = restaDesdeObjeto(objetoEjemplo);
-  console.log(resultadoResta);
+}
+
+// Example usage:
+console.log(getVoteCount({ upvotes: 13, downvotes: 0 })); 
+console.log(getVoteCount({ upvotes: 2, downvotes: 33 })); 
+console.log(getVoteCount({ upvotes: 132, downvotes: 132 })); 
