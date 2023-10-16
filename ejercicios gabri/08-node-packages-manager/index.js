@@ -1,6 +1,8 @@
-import faker from '@faker-js/faker';
+import { Faker } from '@faker-js/faker';
 import chalk from 'chalk';
 
-const randomName = faker.name.findName();
-const randomColor = chalk.keyword(faker.random.arrayElement(['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']));
+const faker = new Faker();
+
+const randomName = Faker.name.findName();
+const randomColor = chalk.keyword(Faker.random.arrayElement(['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']));
 console.log(randomColor(randomName));
