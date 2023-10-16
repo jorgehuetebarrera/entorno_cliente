@@ -1,55 +1,69 @@
-import * as fs from 'node:fs';
-import * as readline from 'node:readline';
+import fs from 'node:fs/promises';
+import readline from 'node:readline';
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-function showMenu() {
-    rl.question('1. Crear nueva nota\n2. Editar nota existente\n3. Eliminar nota\nSelecciona una opción: ', (option) => {
+async function showMenu() {
+    try {
+        const option = await askQuestion('1. Crear nueva nota\n2. Editar nota existente\n3. Eliminar nota\nSelecciona una opción: ');
+        
         switch(option) {
             case '1':
-                createNote();
+                await createNote();
                 break;
             case '2':
-                editNote();
+                await editNote();
                 break;
             case '3':
-                deleteNote();
+                await deleteNote();
                 break;
             default:
                 console.log('Opción no válida');
                 showMenu();
                 break;
         }
+    } catch (error) {
+        console.error('Error:', error);
+        rl.close();
+    }
+}
+
+async function askQuestion(question) {
+    return new Promise((resolve) => {
+        rl.question(question, resolve);
     });
 }
 
-function createNote() {
-    rl.question('Introduce el nombre de la nota: ', (name) => {
+async function createNote() {
+    try {
+        const name = await askQuestion('Introduce el nombre de la nota: ');
         let content = '';
         console.log('Introduce el contenido de la nota, escribe dos líneas en blanco para terminar:');
-        rl.on('line', (input) => {
+        
+        rl.on('line', async (input) => {
             if (input.trim() === '' && content.split('\n').pop().trim() === '') {
-                // Se detectaron dos líneas en blanco, terminar la edición
-                fs.writeFile(`${name}.note`, content, (err) => {
-                    if(err) throw err;
-                    console.log('Nota creada');
-                    rl.removeAllListeners('line');  // Importante: quitar el listener para evitar duplicados
-                    showMenu();  // Regresar al menú principal
-                });
+                await fs.writeFile(`${name}.note`, content);
+                console.log('Nota creada');
+                rl.removeAllListeners('line');
+                showMenu();
             } else {
-                content += input + '\n';  // Añadir la línea al contenido
+                content += input + '\n';
             }
         });
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        rl.close();
+    }
 }
 
-function editNote() {
-    fs.readdir('./', (err, files) => {
-        if (err) throw err;
+async function editNote() {
+    try {
+        const files = await fs.readdir('./');
         const notes = files.filter(f => f.endsWith('.note'));
+        
         if (notes.length === 0) {
             console.log('No hay notas disponibles para editar.');
             showMenu();
@@ -57,40 +71,42 @@ function editNote() {
             notes.forEach((note, index) => {
                 console.log(`${index + 1}. ${note}`);
             });
-            rl.question('Selecciona una nota para editar: ', (num) => {
-                const noteName = notes[num - 1];
-                if (!noteName) {
-                    console.log('Selección no válida.');
-                    editNote();
-                } else {
-                    fs.readFile(noteName, 'utf8', (err, content) => {
-                        if (err) throw err;
-                        console.log('Contenido actual de la nota:\n', content);
-                        console.log('Escribe el nuevo contenido, escribe dos líneas en blanco para terminar:');
-                        let newContent = '';
-                        rl.on('line', (input) => {
-                            if (input.trim() === '' && newContent.split('\n').pop().trim() === '') {
-                                fs.writeFile(noteName, newContent, (err) => {
-                                    if (err) throw err;
-                                    console.log('Nota actualizada');
-                                    rl.removeAllListeners('line');
-                                    showMenu();
-                                });
-                            } else {
-                                newContent += input + '\n';
-                            }
-                        });
-                    });
-                }
-            });
+            
+            const num = await askQuestion('Selecciona una nota para editar: ');
+            const noteName = notes[num - 1];
+            
+            if (!noteName) {
+                console.log('Selección no válida.');
+                editNote();
+            } else {
+                const content = await fs.readFile(noteName, 'utf8');
+                console.log('Contenido actual de la nota:\n', content);
+                console.log('Escribe el nuevo contenido, escribe dos líneas en blanco para terminar:');
+                let newContent = '';
+                
+                rl.on('line', async (input) => {
+                    if (input.trim() === '' && newContent.split('\n').pop().trim() === '') {
+                        await fs.writeFile(noteName, newContent);
+                        console.log('Nota actualizada');
+                        rl.removeAllListeners('line');
+                        showMenu();
+                    } else {
+                        newContent += input + '\n';
+                    }
+                });
+            }
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        rl.close();
+    }
 }
 
-function deleteNote() {
-    fs.readdir('./', (err, files) => {
-        if (err) throw err;
+async function deleteNote() {
+    try {
+        const files = await fs.readdir('./');
         const notes = files.filter(f => f.endsWith('.note'));
+        
         if (notes.length === 0) {
             console.log('No hay notas disponibles para eliminar.');
             showMenu();
@@ -98,21 +114,23 @@ function deleteNote() {
             notes.forEach((note, index) => {
                 console.log(`${index + 1}. ${note}`);
             });
-            rl.question('Selecciona una nota para eliminar: ', (num) => {
-                const noteName = notes[num - 1];
-                if (!noteName) {
-                    console.log('Selección no válida.');
-                    deleteNote();
-                } else {
-                    fs.unlink(noteName, (err) => {
-                        if (err) throw err;
-                        console.log('Nota eliminada');
-                        showMenu();
-                    });
-                }
-            });
+            
+            const num = await askQuestion('Selecciona una nota para eliminar: ');
+            const noteName = notes[num - 1];
+            
+            if (!noteName) {
+                console.log('Selección no válida.');
+                deleteNote();
+            } else {
+                await fs.unlink(noteName);
+                console.log('Nota eliminada');
+                showMenu();
+            }
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        rl.close();
+    }
 }
 
 showMenu();
