@@ -1,0 +1,18 @@
+{
+  "name": "notas",
+  "version": "1.0.0",
+  "main": "notas.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "crearNota": "node notas.js create",
+    "editarNota": "node notas.js edit",
+    "eliminarNota": "node notas.js delete"
+  },
+  "author": "jorge",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
