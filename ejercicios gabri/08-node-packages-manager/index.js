@@ -1,8 +1,17 @@
-import { Faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import chalk from 'chalk';
 
-const faker = new Faker();
-
-const randomName = Faker.name.findName();
-const randomColor = chalk.keyword(Faker.random.arrayElement(['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']));
-console.log(randomColor(randomName));
+function getRandomColor() {
+    const colors = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan', 'white', 'gray'];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  }
+  
+  function printRandomNameInRandomColor() {
+      const randomName = faker.person.firstName();
+    const randomColor = getRandomColor();
+    const coloredName = chalk[randomColor](randomName);
+    console.log(coloredName);
+  }
+  
+  setInterval(printRandomNameInRandomColor, 1000);
