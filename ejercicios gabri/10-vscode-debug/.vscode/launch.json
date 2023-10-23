@@ -11,7 +11,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch index",
+            "name": "Launch App",
             
             "program": "${workspaceFolder}\\app.js"
         }
