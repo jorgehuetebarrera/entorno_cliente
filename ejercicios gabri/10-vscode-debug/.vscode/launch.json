@@ -13,7 +13,7 @@
             "request": "launch",
             "name": "Launch App",
             
-            "program": "${workspaceFolder}\\app.js"
+            "program": "${file}"
         }
     ]
     
