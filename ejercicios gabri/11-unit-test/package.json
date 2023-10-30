@@ -2,7 +2,7 @@
   "name": "11-unit-test",
   "version": "1.0.0",
   "description": "",
-"type": "module",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest"
