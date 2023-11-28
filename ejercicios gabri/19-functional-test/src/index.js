@@ -1,7 +1,11 @@
-import app from './app.js';
-import logger from './utils/index.js'
+import { init } from './loaders/index.js';
+import express from 'express';
 
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
-  logger.info('Server started successfully');
+const app = express();
+const PORT = 3000;
+
+init(app);
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

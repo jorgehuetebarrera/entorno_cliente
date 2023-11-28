@@ -1,8 +1,11 @@
+import { init } from './loaders/index.js';
 import express from 'express';
-import * as loader from './loaders/index.js';
 
-const server = express();
+const app = express();
+const PORT = 3000;
 
-loader.init(server);
+init(app);
 
-export default server;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
