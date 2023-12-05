@@ -1,7 +1,7 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// auth-middleware.js
 
-const secretKey = 'jorge'; // Reemplaza con tu propia clave secreta
+import jwt from 'jsonwebtoken';
+import { secretKey } from '../config/keys.js';
 
 const validarTokenMiddleware = (req, res, next) => {
   // Obtén el token desde la solicitud
@@ -12,14 +12,15 @@ const validarTokenMiddleware = (req, res, next) => {
   }
 
   try {
-    // Desencripta el token con bcrypt
+    // Desencripta el token con jwt
     const decodedToken = jwt.verify(token, secretKey);
 
     // Verifica si el mensaje original es "I know your secret"
-    const mensajeOriginal = bcrypt.compareSync('I know your secret', decodedToken.mensaje);
+    if (decodedToken.mensaje === 'I know your secret') {
+      // Agrega la información del usuario (incluyendo el rol) al objeto req
+      req.user = decodedToken;
 
-    if (mensajeOriginal) {
-      // Acceso válido, puedes continuar con la solicitud
+      // Si todas las verificaciones pasan, puedes continuar con la solicitud
       next();
     } else {
       return res.status(401).json({ mensaje: 'Acceso no autorizado. Mensaje incorrecto.' });
@@ -29,4 +30,4 @@ const validarTokenMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = validarTokenMiddleware;
+export default validarTokenMiddleware;
