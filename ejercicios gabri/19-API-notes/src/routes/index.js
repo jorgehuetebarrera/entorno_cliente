@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.get('/ping', pingController);
 router.get('/admin', validateAdminMiddleware, adminAccessController);
-router.use('/notes', noteRouter);
+router.use('/notes', noteRouter); // Cambio aquí para establecer "/notes" como la ruta principal
 
 export default router;
