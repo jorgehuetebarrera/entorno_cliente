@@ -7,7 +7,7 @@ const app = express();
 const PORT = 3000;
 
 init(app);
-app.use(routes);
+//app.use(routes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
