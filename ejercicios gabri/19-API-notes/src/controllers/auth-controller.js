@@ -1,57 +1,40 @@
-import { hashPassword, comparePasswords } from '../security/auth/authHelper.js';
-import { generateToken } from '../security/auth/jwt.js';
-import { getUser } from './notes-controller.js';
+import fs from 'fs/promises';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-export async function registerController(req, res) {
-  try {
-    const { username, password } = req.body;
-
-    // Validaciones de entrada
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Los campos de usuario y contraseña son obligatorios' });
-    }
-
-    // Aquí podrías hacer más validaciones según tus requisitos
-
-    const hashedPassword = await hashPassword(password);
-
-    // Guardar el usuario en la base de datos (si aplicable)
-
-    res.json({ message: 'Usuario registrado con éxito' });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-}
+const secretKey = 'croqueta'; // Asegúrate de cambiar esto y usar un secreto más seguro en un entorno real
 
 export async function loginController(req, res) {
   try {
-    const { username, password } = req.body;
-
-    // Validaciones de entrada
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Los campos de usuario y contraseña son obligatorios' });
-    }
+    // Puedes omitir la validación de usuario y contraseña si solo deseas generar un token de manera automática.
+     const { username, password } = req.body;
 
     // Aquí podrías hacer más validaciones según tus requisitos
 
-    const user = getUser(username); // Supongamos que tienes una función para obtener un usuario por nombre de usuario
+    // En lugar de verificar el usuario y contraseña, simplemente genera un token.
+     const hashedPassword = await hashPassword(password);
 
-    if (!user) {
-      return res.status(401).json({ error: 'Usuario no encontrado' });
-    }
+    // Guardar el usuario en la base de datos (si aplicable)
 
-    const isPasswordValid = await comparePasswords(password, user.hashedPassword);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Contraseña incorrecta' });
-    }
-
-    const token = generateToken({ username: user.username });
+    const token = generateToken({ /* Aquí puedes incluir cualquier información adicional que desees en el payload */ });
 
     res.json({ token });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
+}
+
+// Funciones auxiliares para la autenticación
+async function hashPassword(password) {
+  const saltRounds = 10;
+  return bcrypt.hash(password, saltRounds);
+}
+
+export async function comparePasswords(password, hashedPassword) {
+  return bcrypt.compare(password, hashedPassword);
+}
+
+export function generateToken(payload) {
+  return jwt.sign(payload, secretKey, { expiresIn: '1h' });
 }
