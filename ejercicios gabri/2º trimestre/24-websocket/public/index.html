@@ -5,19 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.3/socket.io.js"></script>
-    <script defer>
-        const socket = io();
+    <script >
+        const createLi =(text) => {
+            const li = document.createElement('li');
+            li.innerText = text;
+            return li
+        }
+        window.onload = init;
+        
+        const socket = io('ws://localhost:3000');
+        
+        socket.on('single',(data) =>{
+            console.log(data);
+        })
+
+        function init() {
+            const ul = document.getElementById('list');
+            socket.on('all', (data) => {
+                console.log(data);
+                ul.appendChild(createLi(data));
+            })
+
+            const dateText = document.getElementById('date');
+            const date = new Date();
+            dateText.innerText = newDate.toLocaleString();
+            
+        }
+      
         socket.on('hello', (data) => {
             cosole.log(data);
         })
         socket.on('all', (data) => {
             console.log(data);
         })
+
+        function send() {
+            socket.emit('hello','hola');
+        }
     </script>
 </head>
 <body>
-    <h1> Websocket </h1>
-    <p> open the console to see the message </p>
+   <h2 id="date"></h2>
+   <button id="btn" on
     
 </body>
 </html>

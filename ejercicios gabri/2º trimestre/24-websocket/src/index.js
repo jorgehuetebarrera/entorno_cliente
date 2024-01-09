@@ -16,3 +16,7 @@ io.on('connection', (socket) =>{
         console.log('A user has disconected');
     });
 });
+
+setInterval(() => {
+    io.emit('date', new Date)
+}, 1000);
