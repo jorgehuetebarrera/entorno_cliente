@@ -25,7 +25,9 @@ transporter.verify(function(error, success){
     console.log("SMTP ready")
   }
 });
+ }
 
+ function sendMail(){}
  let info =  transporter.sendMail({
  from: 'its@me.com',
  to: "nose@cual.es",
@@ -37,5 +39,3 @@ transporter.verify(function(error, success){
  console.log("Message sent: %s", info.messageId);
 
 
-main().catch(console.error);
- }

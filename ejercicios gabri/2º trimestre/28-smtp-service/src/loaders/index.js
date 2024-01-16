@@ -3,5 +3,5 @@ import smtpLoader from './smtp-loader.js';
 
 export function init(server, config){
     expressLoader(server);
-    smtpLoader(config.smtp)
+    smtpLoader(config.smtp);
 }
