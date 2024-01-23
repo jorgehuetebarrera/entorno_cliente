@@ -3,6 +3,6 @@ import { createAnimal } from '../controllers/animal-controller.js';
 
 const router = Router();
 
-router.get('/', createAnimal);
+router.post('/', createAnimal);
 
 export default router;

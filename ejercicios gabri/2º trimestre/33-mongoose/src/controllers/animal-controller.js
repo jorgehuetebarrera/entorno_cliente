@@ -4,7 +4,7 @@ export async function createAnimal(req, res, next){
   try{
     const animal = new Animal(req.body);
     const createdAnimal= await animal.save();
-    return createdAnimal;
+    return  res.status(201).send(createdAnimal);
   }catch(error){
     next(error);
   }
