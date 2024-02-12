@@ -3,18 +3,16 @@ import { HttpStatusError } from 'common-errors';
 import jwt from 'jsonwebtoken';
 
 import config from '../config.js';
-import { checkHas } from '../utils/encrypt.js';
-import { getUserByName } from '../services/database/user-db-service.js';
 
 export function login(req, res, next){
        const { username, password } = req.body;
 
-    const user = getUserByName(username);
+    const user = findUser(username);
 
     if(user){
-
-        if(checkHas(password, user.password)){
-            const userInfo = { id: user._id, name: user.username };
+        console.log(password, user.password);
+        if(bcrypt.compareSync(password, user.password)){
+            const userInfo = { id: user.id, name: user.name };
             const jwtConfig = { expiresIn: 10 };
             const token = jwt.sign(userInfo, config.app.secretKey, jwtConfig);
             return res.send({token});

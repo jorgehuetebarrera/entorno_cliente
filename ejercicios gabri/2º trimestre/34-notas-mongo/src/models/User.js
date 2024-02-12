@@ -8,4 +8,13 @@ const userSchema = new Schema({
 
 },{ timestamps: true});
 
+
+
+userSchema.post('find',function(results){
+  results.forEach(doc =>{
+    delete doc.password;
+  });
+  next();
+})
+
 export default model('User', userSchema);

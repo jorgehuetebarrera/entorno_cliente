@@ -1,11 +1,19 @@
 import { User } from '../../models/index.js';
 import { encriptPassword,checkHas } from '../../utils/encrypt.js';
 
-export async function getUserByNameAndPassword(username, password){
-  const user = await User.findOne({ username, password });
 
-  if(!user) throw Error('No user found');
-  if(!checkHas(password,user.password))throw Error('Invalid password');
+export async function getUserByName(username, password) {
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    throw new Error('No user found');
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error('Invalid password');
+  }
 
   return user;
 }
